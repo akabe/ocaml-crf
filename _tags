@@ -1,0 +1,39 @@
+# OASIS_START
+# DO NOT EDIT (digest: 821e8f39066df59ef6a3fdb1238706c4)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
+# useless stuff for the build process
+true: annot, bin_annot
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Library crf
+"lib/crf.cmxs": use_crf
+<lib/*.ml{,i,y}>: package(bigarray)
+<lib/*.ml{,i,y}>: package(gsl)
+<lib/*.ml{,i,y}>: package(slap)
+# Library odoc_custom
+"doc/custom/odoc_custom.cmxs": use_odoc_custom
+<doc/custom/odoc_custom.{cma,cmxa}>: oasis_library_odoc_custom_byte
+<doc/custom/*.ml{,i,y}>: oasis_library_odoc_custom_byte
+<doc/custom/odoc_custom.{cma,cmxa}>: oasis_library_odoc_custom_native
+<doc/custom/*.ml{,i,y}>: oasis_library_odoc_custom_native
+# Executable test
+<test/test.{native,byte}>: package(bigarray)
+<test/test.{native,byte}>: package(gsl)
+<test/test.{native,byte}>: package(oUnit)
+<test/test.{native,byte}>: package(slap)
+<test/test.{native,byte}>: use_crf
+<test/*.ml{,i,y}>: package(bigarray)
+<test/*.ml{,i,y}>: package(gsl)
+<test/*.ml{,i,y}>: package(oUnit)
+<test/*.ml{,i,y}>: package(slap)
+<test/*.ml{,i,y}>: use_crf
+# OASIS_STOP
