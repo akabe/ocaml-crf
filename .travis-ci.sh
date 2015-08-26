@@ -1,5 +1,5 @@
 # OPAM packages you install
-OPAM_DEPS="ocamlfind camlp4 gsl slap ounit"
+OPAM_DEPS="ocamlfind slap ounit"
 
 export PREFIX="./usr"
 export BINDIR="$PREFIX/bin"
@@ -20,12 +20,18 @@ export OPAMVERBOSE=1
 opam init
 eval `opam config env`
 
-opam depext camlp4.4.02+6
-
 # Install OPAM packages
 if [ -n "${OPAM_DEPS:-}" ]; then
     opam install $OPAM_DEPS
 fi
+
+# Install GSL-OCaml
+git clone https://github.com/mmottl/gsl-ocaml.git
+cd gsl-ocaml
+./configure --prefix=`opam config var prefix` --disable-examples --disable-camlp4
+make
+make install
+cd ..
 
 # Build and install your program
 ./configure --prefix=`opam config var prefix` --enable-tests

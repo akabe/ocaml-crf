@@ -3,11 +3,9 @@ sudo: false
 cache: apt
 
 # APT packages you need to install
-# (m4 is requied by camlp4)
 addons:
   apt:
     packages:
-    - m4
     - libblas-dev
     - liblapack-dev
     - libgsl0-dev
