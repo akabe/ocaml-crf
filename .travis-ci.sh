@@ -20,6 +20,8 @@ export OPAMVERBOSE=1
 opam init
 eval `opam config env`
 
+opam depext camlp4.4.02+6
+
 # Install OPAM packages
 if [ -n "${OPAM_DEPS:-}" ]; then
     opam install $OPAM_DEPS
