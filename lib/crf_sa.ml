@@ -36,7 +36,7 @@ let choose_out_label ~rng ~temp model w iv ov =
 
 let update ~rng ~all ~temp model w ig og =
   let updv iv ov = G.set ov (choose_out_label ~rng ~temp model w iv ov) in
-  let updv_none iv ov = if (G.get iv).lb_output = None then updv iv ov in
+  let updv_none iv ov = if (G.get iv).out_label = None then updv iv ov in
   G.iter2 (if all then updv else updv_none) ig og
 
 let infer ~rng ~all sa model w ig =

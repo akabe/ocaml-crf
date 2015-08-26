@@ -31,7 +31,7 @@ let sampling1 ~rng ~all model w ig og =
     |> G.set ov
   in
   let update_none iv ov =
-    if (G.get iv).lb_output = None then update iv ov
+    if (G.get iv).out_label = None then update iv ov
   in
   G.iter2 (if all then update else update_none) ig og
 

@@ -20,8 +20,8 @@ open Slap.D
 (** The type of labels of input graphs. *)
 type ('a, 'b) label =
   {
-    lb_input : 'a;
-    lb_output : 'b option;
+    in_label : 'a;
+    out_label : 'b option;
   }
 
 (** The type of graphs. *)

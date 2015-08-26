@@ -32,7 +32,7 @@ let fold ~all { out_labels = cands; _ } f init ig =
     then G.fold (fun acc ov -> ov :: acc) [] og
     else G.fold2
         (fun acc iv ov ->
-           if (G.get iv).lb_output = None then ov :: acc else acc)
+           if (G.get iv).out_label = None then ov :: acc else acc)
         [] ig og in
   let acc = aux init asgn in
   acc
@@ -90,4 +90,4 @@ let infer ~all model w ig =
   in
   match fold ~all model aux None ig with
   | Some (_, og) -> og
-  | None -> G.map (fun ov -> val_of (G.get ov).lb_output) ig
+  | None -> G.map (fun ov -> val_of (G.get ov).out_label) ig

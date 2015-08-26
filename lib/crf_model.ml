@@ -19,8 +19,8 @@ open Slap.D
 
 type ('a, 'b) label =
   {
-    lb_input : 'a;
-    lb_output : 'b option;
+    in_label : 'a;
+    out_label : 'b option;
   }
 
 type 'a graph = 'a Crf_graph.t
@@ -45,7 +45,7 @@ type ('a, 'b, 'kv, 'ke) model =
 let create_out_graph ~all cands ig =
   let aux = if all
     then (fun _ -> cands.(0))
-    else (fun v -> match (Crf_graph.get v).lb_output with
+    else (fun v -> match (Crf_graph.get v).out_label with
         | None -> cands.(0)
         | Some ol -> ol) in
   Crf_graph.map aux ig
@@ -55,7 +55,7 @@ let random_out_graph ~rng ~all cands ig =
   let gen_out_label () = cands.(Gsl.Rng.uniform_int rng n) in
   let aux = if all
     then (fun _ -> gen_out_label ())
-    else (fun iv -> match (Crf_graph.get iv).lb_output with
+    else (fun iv -> match (Crf_graph.get iv).out_label with
         | None -> gen_out_label ()
         | Some ol -> ol) in
   Crf_graph.map aux ig

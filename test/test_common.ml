@@ -14,7 +14,7 @@ let rng = Gsl.Rng.make Gsl.Rng.MT19937
 let model =
   let idx_of_label b = if b then 1 else 0 in
   let idx_of_vertex iv ov =
-    idx_of_label (G.get iv).lb_input * 2 + idx_of_label (G.get ov) in
+    idx_of_label (G.get iv).in_label * 2 + idx_of_label (G.get ov) in
   let vertex_ff iv ov =
     let j = idx_of_vertex iv ov in
     Vec.init KV.value (fun i -> if i = j then 1.0 else 0.0)
@@ -34,7 +34,7 @@ let model =
    |           +----- v4 ----+     |
    +-------------------------------+ *)
 let input_graph =
-  let vertex il ol = G.create { lb_input = il; lb_output = ol; } in
+  let vertex il ol = G.create { in_label = il; out_label = ol; } in
   let v1 = vertex true None in
   let v2 = vertex false (Some true) in
   let v3 = vertex true (Some false) in
