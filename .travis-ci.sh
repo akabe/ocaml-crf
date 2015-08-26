@@ -1,5 +1,5 @@
 # OPAM packages you install
-OPAM_DEPS="ocamlfind gsl slap ounit"
+OPAM_DEPS="ocamlfind camlp4 gsl slap ounit"
 
 export PREFIX="./usr"
 export BINDIR="$PREFIX/bin"
