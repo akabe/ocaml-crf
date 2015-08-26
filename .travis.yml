@@ -6,7 +6,9 @@ cache: apt
 addons:
   apt:
     packages:
+    - libblas-dev
     - liblapack-dev
+    - libgsl0-dev
 
 script: bash -eu .travis-ci.sh
 
