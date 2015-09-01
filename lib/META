@@ -1,6 +1,6 @@
 # OASIS_START
-# DO NOT EDIT (digest: a4842be5c81efab24c28a3ca2923ef60)
-version = "0.0.0"
+# DO NOT EDIT (digest: d8b56e1c48b3133489670cbbd002b4ac)
+version = "0.0.1"
 description = "A library for conditional random field (CRF) in OCaml"
 requires = "bigarray slap gsl"
 archive(byte) = "crf.cma"

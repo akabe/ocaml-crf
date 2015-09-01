@@ -1,7 +1,7 @@
 OASISFormat:            0.4
 OCamlVersion:           >= 4.02
 Name:                   crf
-Version:                0.0.0
+Version:                0.0.1
 Synopsis:               A library for conditional random field (CRF) in OCaml
 Maintainers:            Akinori ABE <abe@sf.ecei.tohoku.ac.jp>
 Authors:                Akinori ABE <abe@sf.ecei.tohoku.ac.jp>
@@ -21,8 +21,8 @@ Library crf
   Modules:              Crf,
                         Crf_graph,
                         Crf_model,
-                        Crf_core
-  InternalModules:      Crf_distrib,
+                        Crf_core,
+                        Crf_distrib,
                         Crf_naive,
                         Crf_sampling,
                         Crf_sa
