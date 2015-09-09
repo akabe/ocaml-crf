@@ -9,7 +9,8 @@ SRCS = \
 	crf_train.mli \
 	crf_naive.ml \
 	crf_sampling.mli \
-	crf_sa.mli
+	crf_sa.mli \
+	crf_ga.mli
 
 all:
 	cd $(BUILDDIR)/lib; ocamlfind ocamldoc $(DOCFLAGS) $(SRCS)
