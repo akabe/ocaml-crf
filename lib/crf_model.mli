@@ -15,6 +15,8 @@
    You should have received a copy of the GNU General Public License along with
    this program. If not, see <http://www.gnu.org/licenses/>. *)
 
+(** Commonly used typed and functions *)
+
 open Slap.D
 
 (** The type of labels of input graphs. *)
@@ -92,26 +94,3 @@ val graph_potential :
   ('kv, 'ke) fwvec ->
   ('a, 'b) in_graph ->
   'b graph -> float
-
-(** {2 Settings for Gibbs sampler} *)
-
-type sampler =
-  {
-    sequences : int;
-    samples : int;
-    period : int;
-    burn_in : int;
-  }
-
-val default_sampler : sampler
-
-(** {2 Settings for simulated annealing} *)
-
-type sa =
-  {
-    loops : int;
-    init_temp : float;
-    decr_temp : float;
-  }
-
-val default_sa : sa

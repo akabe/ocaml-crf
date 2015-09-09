@@ -127,6 +127,30 @@ let validate g =
       acc && List.for_all (fun c -> List.mem v c.v_parents) v.v_children)
     true g
 
+(** {2 Comparison} *)
+
+let rec cmp_list cmp xs ys = match xs, ys with
+  | [], [] -> 0
+  | _ :: _, [] -> 1
+  | [], _ :: _ -> -1
+  | x :: xs', y :: ys' ->
+    let res = cmp x y in
+    if res = 0 then cmp_list cmp xs' ys' else res
+
+let compare ?(cmp = Pervasives.compare) =
+  let seen = ref PtrSet.empty in
+  let rec aux v1 v2 =
+    let p = Ptr.get v1 in
+    if PtrSet.mem p !seen then 0 else begin
+      seen := PtrSet.add p !seen;
+      let res = cmp (get v1) (get v2) in
+      if res = 0 then cmp_list aux v1.v_children v2.v_children else res
+    end
+  in
+  aux
+
+let equal ?cmp x y = compare ?cmp x y = 0
+
 (** {2 Pretty printing} *)
 
 let pp_graph pp_vertex ppf g =

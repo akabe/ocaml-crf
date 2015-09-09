@@ -21,6 +21,22 @@ open Crf_model
 
 module G = Crf_graph
 
+type t =
+  {
+    sequences : int;
+    samples : int;
+    period : int;
+    burn_in : int;
+  }
+
+let default =
+  {
+    sequences = 3;
+    samples = 50;
+    period = 1;
+    burn_in = 100;
+  }
+
 (** [sampling1 ~rng ~all model w in_graph out_graph] destructively updates all
     output labels in [out_graph] by Gibbs sampling. *)
 let sampling1 ~rng ~all model w ig og =

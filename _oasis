@@ -21,7 +21,7 @@ Library crf
   Modules:              Crf,
                         Crf_graph,
                         Crf_model,
-                        Crf_core,
+                        Crf_train,
                         Crf_distrib,
                         Crf_naive,
                         Crf_sampling,

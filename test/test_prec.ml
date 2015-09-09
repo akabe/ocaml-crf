@@ -24,23 +24,23 @@ let print_table title v1 v2 =
 let main () =
   let w = random_fwvec ~rng model in
   (* Normalization coefficient *)
-  let n1 = Crf_naive.normalizer model w input_graph in
-  let n2 = Crf_sampling.normalizer ~rng default_sampler model w input_graph in
+  let n1 = Naive.normalizer model w input_graph in
+  let n2 = Sampling.normalizer ~rng Sampling.default model w input_graph in
   printf "normalizer:@\n  \
           Naive    = %.6g@\n  \
           Sampling = %.6g@\n  \
           Error    = %.6g@\n@." n1 n2 (abs_float (n1 -. n2));
   (* Means of feature vectors *)
-  let mfv1 = Crf_naive.mean_feature_vec ~all:true model w input_graph in
-  let mfv2 = Crf_sampling.mean_feature_vec
-      ~rng ~all:true default_sampler model w input_graph in
+  let mfv1 = Naive.mean_feature_vec ~all:true model w input_graph in
+  let mfv2 = Sampling.mean_feature_vec
+      ~rng ~all:true Sampling.default model w input_graph in
   print_table "mean_feature_vec (observable & latent vars)" mfv1 mfv2;
-  let mfv1' = Crf_naive.mean_feature_vec ~all:false model w input_graph in
-  let mfv2' = Crf_sampling.mean_feature_vec
-      ~rng ~all:false default_sampler model w input_graph in
+  let mfv1' = Naive.mean_feature_vec ~all:false model w input_graph in
+  let mfv2' = Sampling.mean_feature_vec
+      ~rng ~all:false Sampling.default model w input_graph in
   print_table "mean_feature_vec (latent vars only)" mfv1' mfv2';
   (* The gradient of log likelihood *)
-  let dJ1 = Crf_naive.grad_log_likelihood model w input_graph in
-  let dJ2 = Crf_sampling.grad_log_likelihood
-      ~rng default_sampler model w input_graph in
+  let dJ1 = Naive.grad_log_likelihood model w input_graph in
+  let dJ2 = Sampling.grad_log_likelihood
+      ~rng Sampling.default model w input_graph in
   print_table "grad_log_likelihood" dJ1 dJ2

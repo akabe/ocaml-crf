@@ -19,6 +19,20 @@ open Crf_model
 
 module G = Crf_graph
 
+type t =
+  {
+    sa_loops : int;
+    sa_init_temp : float;
+    sa_decr_temp : float;
+  }
+
+let default =
+  {
+    sa_loops = 100;
+    sa_init_temp = 1000.;
+    sa_decr_temp = 0.9;
+  }
+
 let choose_out_label ~rng ~temp model w iv ov =
   let dist =
     let pot0 = local_potential model w iv ov in
@@ -41,9 +55,9 @@ let update ~rng ~all ~temp model w ig og =
 
 let infer ~rng ~all sa model w ig =
   let og = random_out_graph ~rng ~all model.out_labels ig in
-  let temp = ref sa.init_temp in (* temperature *)
-  for _ = 1 to sa.loops do
+  let temp = ref sa.sa_init_temp in (* temperature *)
+  for _ = 1 to sa.sa_loops do
     update ~rng ~all ~temp:!temp model w ig og;
-    temp := sa.decr_temp *. !temp
+    temp := sa.sa_decr_temp *. !temp
   done;
   og

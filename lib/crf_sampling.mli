@@ -15,49 +15,39 @@
    You should have received a copy of the GNU General Public License along with
    this program. If not, see <http://www.gnu.org/licenses/>. *)
 
-open Crf_model
+(** Gibbs sampling *)
 
-val prob :
-  rng:Gsl.Rng.t ->
-  sampler ->
-  ('a, 'b, 'kv, 'ke) model ->
-  ('kv, 'ke) fwvec ->
-  ('a, 'b) in_graph -> 'b graph -> float
+type t =
+  {
+    sequences : int;
+    samples : int;
+    period : int;
+    burn_in : int;
+  }
+
+val default : t
 
 val normalizer :
-  rng:Gsl.Rng.t ->
-  sampler ->
-  ('a, 'b, 'kv, 'ke) model ->
-  ('kv, 'ke) fwvec ->
-  ('a, 'b) in_graph -> float
+  rng:Gsl.Rng.t -> t ->
+  ('a, 'b, 'kv, 'ke) Crf_model.model ->
+  ('kv, 'ke) Crf_model.fwvec ->
+  ('a, 'b) Crf_model.in_graph -> float
+
+val prob :
+  rng:Gsl.Rng.t -> t ->
+  ('a, 'b, 'kv, 'ke) Crf_model.model ->
+  ('kv, 'ke) Crf_model.fwvec ->
+  ('a, 'b) Crf_model.in_graph ->
+  'b Crf_model.graph -> float
 
 val mean_feature_vec :
-  rng:Gsl.Rng.t ->
-  all:bool ->
-  sampler ->
-  ('a, 'b, 'kv, 'ke) model ->
-  ('kv, 'ke) fwvec ->
-  ('a, 'b) in_graph -> ('kv, 'ke) fwvec
+  rng:Gsl.Rng.t -> all:bool -> t ->
+  ('a, 'b, 'kv, 'ke) Crf_model.model ->
+  ('kv, 'ke) Crf_model.fwvec ->
+  ('a, 'b) Crf_model.in_graph -> ('kv, 'ke) Crf_model.fwvec
 
 val grad_log_likelihood :
-  rng:Gsl.Rng.t ->
-  sampler ->
-  ('a, 'b, 'kv, 'ke) model ->
-  ('kv, 'ke) fwvec ->
-  ('a, 'b) in_graph list -> ('kv, 'ke) fwvec
-
-val grad_log_posterior :
-  rng:Gsl.Rng.t ->
-  sigma2:float ->
-  sampler ->
-  ('a, 'b, 'kv, 'ke) model ->
-  ('kv, 'ke) fwvec ->
-  ('a, 'b) in_graph list -> ('kv, 'ke) fwvec
-
-val infer :
-  rng:Gsl.Rng.t ->
-  all:bool ->
-  sa ->
-  ('a, 'b, 'kv, 'ke) model ->
-  ('kv, 'ke) fwvec ->
-  ('a, 'b) in_graph -> 'b graph
+  rng:Gsl.Rng.t -> t ->
+  ('a, 'b, 'kv, 'ke) Crf_model.model ->
+  ('kv, 'ke) Crf_model.fwvec ->
+  ('a, 'b) Crf_model.in_graph -> ('kv, 'ke) Crf_model.fwvec

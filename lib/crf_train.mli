@@ -15,21 +15,43 @@
    You should have received a copy of the GNU General Public License along with
    this program. If not, see <http://www.gnu.org/licenses/>. *)
 
-(** Simulated annealing *)
+(** Functions for training of CRF *)
 
-type t =
-  {
-    sa_loops : int;
-    sa_init_temp : float;
-    sa_decr_temp : float;
-  }
+open Crf_model
 
-val default : t
+val prob :
+  rng:Gsl.Rng.t ->
+  Crf_sampling.t ->
+  ('a, 'b, 'kv, 'ke) model ->
+  ('kv, 'ke) fwvec ->
+  ('a, 'b) in_graph -> 'b graph -> float
 
-val infer :
+val normalizer :
+  rng:Gsl.Rng.t ->
+  Crf_sampling.t ->
+  ('a, 'b, 'kv, 'ke) model ->
+  ('kv, 'ke) fwvec ->
+  ('a, 'b) in_graph -> float
+
+val mean_feature_vec :
   rng:Gsl.Rng.t ->
   all:bool ->
-  t ->
-  ('a, 'b, 'kv, 'ke) Crf_model.model ->
-  ('kv, 'ke) Crf_model.fwvec ->
-  ('a, 'b) Crf_model.in_graph -> 'b Crf_model.graph
+  Crf_sampling.t ->
+  ('a, 'b, 'kv, 'ke) model ->
+  ('kv, 'ke) fwvec ->
+  ('a, 'b) in_graph -> ('kv, 'ke) fwvec
+
+val grad_log_likelihood :
+  rng:Gsl.Rng.t ->
+  Crf_sampling.t ->
+  ('a, 'b, 'kv, 'ke) model ->
+  ('kv, 'ke) fwvec ->
+  ('a, 'b) in_graph list -> ('kv, 'ke) fwvec
+
+val grad_log_posterior :
+  rng:Gsl.Rng.t ->
+  sigma2:float ->
+  Crf_sampling.t ->
+  ('a, 'b, 'kv, 'ke) model ->
+  ('kv, 'ke) fwvec ->
+  ('a, 'b) in_graph list -> ('kv, 'ke) fwvec

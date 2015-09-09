@@ -22,4 +22,11 @@ module Graph = Crf_graph
 
 include Crf_model
 
-include Crf_core
+module Train = Crf_train
+
+module Naive = Crf_naive
+
+module Sampling = Crf_sampling
+
+(** Simulated annealing *)
+module SA = Crf_sa

@@ -18,6 +18,7 @@
 open Format
 open Slap.D
 open Crf_model
+open Crf_sampling
 
 let pow =
   let rec aux acc x n =
@@ -63,10 +64,3 @@ let grad_log_posterior ~rng ~sigma2 smp model w igs =
   let dJ_dw = grad_log_likelihood ~rng smp model w igs in
   axpy ~alpha:((-1.) /. sigma2) w dJ_dw;
   dJ_dw
-
-let infer ~rng ~all sa model w ig =
-  let gsize = Crf_graph.size ig in
-  let c_naive = pow (Array.length model.out_labels) gsize in
-  let c_sa = sa.loops * gsize in
-  if c_naive < c_sa then Crf_naive.infer ~all model w ig
-  else Crf_sa.infer ~rng ~all sa model w ig

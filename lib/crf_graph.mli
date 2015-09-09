@@ -81,6 +81,12 @@ val iter : ('a t -> unit) -> 'a t -> unit
 
 val iter2 : ('a t -> 'b t -> unit) -> 'a t -> 'b t -> unit
 
+(** {2 Comparison} *)
+
+val compare : ?cmp:('a -> 'a -> int) -> 'a t -> 'a t -> int
+
+val equal : ?cmp:('a -> 'a -> int) -> 'a t -> 'a t -> bool
+
 (** {2 Pretty printing} *)
 
 val pp_graph : (formatter -> 'a t -> unit) -> formatter -> 'a t -> unit

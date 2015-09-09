@@ -30,12 +30,12 @@ let main () =
   let w = random_fwvec ~rng model in
   printf "Training:@.";
   for i = 0 to 1000 do
-    let dJ_dw = grad_log_posterior
-        ~rng ~sigma2 default_sampler model w data_set in
+    let dJ_dw = Train.grad_log_posterior
+        ~rng ~sigma2 Sampling.default model w data_set in
     axpy ~alpha:eta dJ_dw w;
     if i mod 100 = 0 then printf "Loop %4d: |dJ/dw|^2 = %g@." i (nrm2 dJ_dw)
   done;
   show_all_patterns model w input_graph;
-  let og' = Crf_sa.infer ~rng ~all:false default_sa model w input_graph in
+  let og' = SA.infer ~rng ~all:false SA.default model w input_graph in
   printf "graph = %s; potential = %g@."
     (string_of_og og') (graph_potential model w input_graph og')

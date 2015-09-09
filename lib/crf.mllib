@@ -1,9 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: 09e0ecc602787f8d5ef243e8c43537a0)
+# DO NOT EDIT (digest: 90375df80551bd511199112c5db89d65)
 Crf
 Crf_graph
 Crf_model
-Crf_core
+Crf_train
 Crf_distrib
 Crf_naive
 Crf_sampling

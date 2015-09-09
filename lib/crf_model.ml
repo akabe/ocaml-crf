@@ -110,37 +110,3 @@ let graph_potential model w ig og =
     acc +. pot_v +. pot_e
   in
   exp (Crf_graph.fold2 add_potential 0.0 ig og)
-
-(** {2 Settings for Gibbs sampler} *)
-
-type sampler =
-  {
-    sequences : int;
-    samples : int;
-    period : int;
-    burn_in : int;
-  }
-
-let default_sampler =
-  {
-    sequences = 3;
-    samples = 50;
-    period = 1;
-    burn_in = 100;
-  }
-
-(** {2 Settings for simulated annealing} *)
-
-type sa =
-  {
-    loops : int;
-    init_temp : float;
-    decr_temp : float;
-  }
-
-let default_sa =
-  {
-    loops = 100;
-    init_temp = 1000.;
-    decr_temp = 0.9;
-  }
