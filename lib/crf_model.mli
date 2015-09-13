@@ -49,8 +49,7 @@ type ('a, 'b, 'kv, 'ke) model =
 (** {2 Construction of output graphs} *)
 
 val create_out_graph :
-  all:bool ->
-  'b array ->
+  all:bool -> 'b ->
   ('a, 'b) in_graph -> 'b graph
 
 val random_out_graph :

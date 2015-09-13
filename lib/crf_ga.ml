@@ -140,7 +140,9 @@ let infer ~rng ~all ga model w ig =
   let gsize = G.size ig in
   let ogs = Array.init
       (ga.ga_elite + (ga.ga_unico + ga.ga_2pco) * 2)
-      (fun _ -> M.random_out_graph ~rng ~all model.M.out_labels ig) in
+      (fun i ->
+         M.random_out_graph ~all:(if i < ga.ga_elite then false else all)
+           ~rng model.M.out_labels ig) in
   let cur_best distrib = (* the best solution in the current generation *)
     let (_, og) = distrib.(0) in
     (og, M.graph_potential model w ig og)

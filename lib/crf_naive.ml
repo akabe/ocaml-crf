@@ -24,7 +24,7 @@ open Crf_model
 module G = Crf_graph
 
 let fold ~all { out_labels = cands; _ } f init ig =
-  let og = create_out_graph ~all cands ig in
+  let og = create_out_graph ~all cands.(0) ig in
   let rec aux acc = function
     | [] -> f acc og
     | hd :: tl ->

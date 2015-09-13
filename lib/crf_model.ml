@@ -42,11 +42,11 @@ type ('a, 'b, 'kv, 'ke) model =
 
 (** {2 Output graphs} *)
 
-let create_out_graph ~all cands ig =
+let create_out_graph ~all default ig =
   let aux = if all
-    then (fun _ -> cands.(0))
+    then (fun _ -> default)
     else (fun v -> match (Crf_graph.get v).out_label with
-        | None -> cands.(0)
+        | None -> default
         | Some ol -> ol) in
   Crf_graph.map aux ig
 
