@@ -74,7 +74,7 @@ let split_fwvec model (fv : ('kv, 'ke) fwvec) : ('kv, _) vec * ('ke, _) vec =
   (nfv, efv)
 
 let random_fwvec ?(range = 2.0) ?(from = -1.0) ~rng model =
-  Vec.init (fwsize model) (fun _ -> range *. Gsl.Rng.uniform rng -. from)
+  Vec.init (fwsize model) (fun _ -> range *. Gsl.Rng.uniform rng +. from)
 
 let graph_feature model ig og =
   let f = Vec.make0 (fwsize model) in
