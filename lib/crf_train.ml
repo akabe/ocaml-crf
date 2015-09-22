@@ -20,21 +20,13 @@ open Slap.D
 open Crf_model
 open Crf_sampling
 
-let pow =
-  let rec aux acc x n =
-    if n = 0 then acc
-    else if n land 1 = 0 then aux acc (x * x) (n lsr 1)
-    else aux (acc * x) x (n - 1)
-  in
-  aux 1
-
 let select smp model ig f_naive f_smpl =
   (* Evaluate computation costs by the number of loops. *)
   let gsize = Crf_graph.size ig in
-  let cost1 = pow (Array.length model.out_labels) gsize in
+  let cost1 = float (Array.length model.out_labels) ** float gsize in
   let cost2 = (smp.samples * smp.period + smp.burn_in)
               * smp.sequences * gsize in
-  if cost1 < cost2 then f_naive () else f_smpl ()
+  if cost1 < float cost2 then f_naive () else f_smpl ()
 
 let prob ~rng smp model w ig og =
   select smp model ig
