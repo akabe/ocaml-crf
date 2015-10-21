@@ -24,69 +24,55 @@ type 'a t =
     mutable v_children : 'a t list;
   }
 
-module Ptr : sig
-  type t = private int
-  val compare : t -> t -> int
-  val get : 'a -> t
-end = struct
-  type t = int
-  let compare = Pervasives.compare
-  let get x = Obj.magic x * 2
-end
-
-module PtrSet = Set.Make(Ptr)
-
 (** {2 Iterators} *)
 
 let connect_to_children v children =
   List.iter (fun c -> c.v_parents <- v :: c.v_parents) children;
   v.v_children <- children
 
-let map f =
-  let tbl = Hashtbl.create 16 in
+let map f g =
+  let tbl = ref [] in
   let rec aux v =
-    try Hashtbl.find tbl (Ptr.get v)
+    try List.assq v !tbl
     with Not_found ->
       let v' = { v_label = f v; v_parents = []; v_children = []; } in
-      Hashtbl.add tbl (Ptr.get v) v';
+      tbl := (v, v') :: !tbl;
       connect_to_children v' (List.map aux v.v_children);
       v'
   in
-  aux
+  aux g
 
-let map2 f =
-  let tbl = Hashtbl.create 16 in
+let map2 f g1 g2 =
+  let tbl = ref [] in
   let rec aux v1 v2 =
-    try Hashtbl.find tbl (Ptr.get v1)
+    try List.assq v1 !tbl
     with Not_found ->
       let v' = { v_label = f v1 v2; v_parents = []; v_children = []; } in
-      Hashtbl.add tbl (Ptr.get v1) v';
+      tbl := (v1, v') :: !tbl;
       connect_to_children v' (List.map2 aux v1.v_children v2.v_children);
       v'
   in
-  aux
+  aux g1 g2
 
-let fold f =
-  let seen = ref PtrSet.empty in
+let fold f acc g =
+  let seen = ref [] in
   let rec aux acc v =
-    let p = Ptr.get v in
-    if PtrSet.mem p !seen then acc else begin
-      seen := PtrSet.add p !seen;
+    if List.memq v !seen then acc else begin
+      seen := v :: !seen;
       List.fold_left aux (f acc v) v.v_children
     end
   in
-  aux
+  aux acc g
 
-let fold2 f =
-  let seen = ref PtrSet.empty in
+let fold2 f acc g1 g2 =
+  let seen = ref [] in
   let rec aux acc v1 v2 =
-    let p = Ptr.get v1 in
-    if PtrSet.mem p !seen then acc else begin
-      seen := PtrSet.add p !seen;
+    if List.memq v1 !seen then acc else begin
+      seen := v1 :: !seen;
       List.fold_left2 aux (f acc v1 v2) v1.v_children v2.v_children
     end
   in
-  aux
+  aux acc g1 g2
 
 let iter f = fold (fun () -> f) ()
 
@@ -138,11 +124,10 @@ let rec cmp_list cmp xs ys = match xs, ys with
     if res = 0 then cmp_list cmp xs' ys' else res
 
 let compare ?(cmp = Pervasives.compare) =
-  let seen = ref PtrSet.empty in
+  let seen = ref [] in
   let rec aux v1 v2 =
-    let p = Ptr.get v1 in
-    if PtrSet.mem p !seen then 0 else begin
-      seen := PtrSet.add p !seen;
+    if List.memq v1 !seen then 0 else begin
+      seen := v1 :: !seen;
       let res = cmp (get v1) (get v2) in
       if res = 0 then cmp_list aux v1.v_children v2.v_children else res
     end
@@ -154,13 +139,21 @@ let equal ?cmp x y = compare ?cmp x y = 0
 (** {2 Pretty printing} *)
 
 let pp_graph pp_vertex ppf g =
-  let ptr x = Obj.magic x * 2 in
+  let tbl = ref [] in
+  let index v =
+    let n = List.length !tbl in
+    let rec aux i = function
+      | [] -> tbl := v :: !tbl ; n
+      | hd :: tl -> if hd == v then i else aux (i - 1) tl
+    in
+    aux (n - 1) !tbl
+  in
   let print_edge lhs rhs =
-    fprintf ppf "  v%d -> v%d [arrowhead=normal];@\n" (ptr lhs) (ptr rhs)
+    fprintf ppf "  v%d -> v%d [arrowhead=normal];@\n" (index lhs) (index rhs)
   in
   fprintf ppf "digraph _ {@\n";
   iter (fun v ->
-      fprintf ppf "  v%d [%a];@\n" (ptr v) pp_vertex v;
+      fprintf ppf "  v%d [%a];@\n" (index v) pp_vertex v;
       List.iter (print_edge v) v.v_children) g;
   fprintf ppf "}"
 
