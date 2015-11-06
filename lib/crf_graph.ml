@@ -164,4 +164,9 @@ let output_image pp_vertex filename g =
   pp_print_flush ppf ();
   match Unix.close_process_out oc with
   | Unix.WEXITED 0 -> ()
-  | _ -> failwith "process failure"
+  | _ -> (* Process failure *)
+     let oc = open_out (filename ^ ".dot") in
+     let ppf = formatter_of_out_channel oc in
+     pp_graph pp_vertex ppf g;
+     pp_print_flush ppf ();
+     close_out oc
