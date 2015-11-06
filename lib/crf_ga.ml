@@ -38,6 +38,10 @@ let default = { ga_generation = 100;
 
 let ( >> ) f g x = g (f x)
 
+let option_default x = function
+  | None -> x
+  | Some y -> y
+
 let prob rng p = Gsl.Rng.uniform rng < p
 
 module Array = struct
@@ -136,13 +140,14 @@ let mutate ~rng ~all p model ig og =
   in
   G.map2 (if all then mutate_all else mutate_none) ig og
 
-let infer ~rng ~all ga model w ig =
+let default_init ~rng ~all model ig _ =
+  M.random_out_graph ~rng ~all model.M.out_labels ig
+
+let infer ?init ~rng ~all ga model w ig =
   let gsize = G.size ig in
   let ogs = Array.init
       (ga.ga_elite + (ga.ga_unico + ga.ga_2pco) * 2)
-      (fun i ->
-         M.random_out_graph ~all:(if i < ga.ga_elite then false else all)
-           ~rng model.M.out_labels ig) in
+      (option_default (default_init ~rng ~all model ig) init) in
   let cur_best distrib = (* the best solution in the current generation *)
     let (_, og) = distrib.(0) in
     (og, M.graph_potential model w ig og)

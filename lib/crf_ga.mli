@@ -35,7 +35,14 @@ val default : t
 val gene :
   ('a, 'b, 'kv, 'ke) Crf_model.model -> 'b Crf_model.graph -> string
 
+val default_init :
+  rng:Gsl.Rng.t -> all:bool ->
+  ('a, 'b, 'kv, 'ke) Crf_model.model ->
+  ('a, 'b) Crf_model.in_graph ->
+  int -> 'b Crf_model.graph
+
 val infer :
+  ?init:(int -> 'b Crf_model.graph) ->
   rng:Gsl.Rng.t -> all:bool -> t ->
   ('a, 'b, 'kv, 'ke) Crf_model.model ->
   ('kv, 'ke) Crf_model.fwvec ->
