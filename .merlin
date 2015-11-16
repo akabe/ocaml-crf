@@ -1,2 +1,4 @@
+S lib
+B _build/lib
 PKG gsl
 PKG slap

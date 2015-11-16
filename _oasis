@@ -26,7 +26,8 @@ Library crf
                         Crf_naive,
                         Crf_sampling,
                         Crf_sa,
-                        Crf_ga
+                        Crf_ga,
+                        Crf_eval
 
 ##
 ## Documentation

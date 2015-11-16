@@ -24,6 +24,8 @@ include Crf_model
 
 module Train = Crf_train
 
+module Eval = Crf_eval
+
 module Naive = Crf_naive
 
 module Sampling = Crf_sampling
