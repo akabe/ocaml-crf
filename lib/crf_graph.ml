@@ -170,3 +170,46 @@ let output_image pp_vertex filename g =
      pp_graph pp_vertex ppf g;
      pp_print_flush ppf ();
      close_out oc
+
+(** {2 Save and load} *)
+
+let pp_print_list ?(pp_sep = pp_print_cut) pp ppf xs =
+  let rec aux = function
+    | [] -> ()
+    | [x] -> pp ppf x
+    | h :: t -> pp ppf h ; pp_sep ppf () ; aux t
+  in
+  aux xs
+
+let save pp ppf g =
+  let tbl = ref [] in
+  let rec aux ppf v =
+    try pp_print_int ppf (List.assq v !tbl)
+    with Not_found ->
+      let i = List.length !tbl in
+      tbl := (v, i) :: !tbl;
+      fprintf ppf "(%d %S %a)"
+        i (asprintf "%a" pp v.v_label)
+        (pp_print_list ~pp_sep:pp_print_space aux) v.v_children
+  in
+  aux ppf g
+
+let load parse lexbuf =
+  let open Crf_graph_interm in
+  let tree = Crf_graph_parser.main Crf_graph_lexer.token lexbuf in
+  let rec create_nodes acc = function
+    | Ref _ -> acc
+    | Node (i, s, children) ->
+      List.fold_left create_nodes ((i, create (parse s)) :: acc) children
+  in
+  let rec connect_nodes tbl = function
+    | Ref i -> List.assoc i tbl
+    | Node (i, _, children) ->
+      let v = List.assoc i tbl in
+      List.rev_map (connect_nodes tbl) children
+      |> List.iter (connect v);
+      v
+  in
+  connect_nodes (create_nodes [] tree) tree
+
+let load_from_string parse str = load parse (Lexing.from_string str)

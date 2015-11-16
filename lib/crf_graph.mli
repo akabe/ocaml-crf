@@ -92,3 +92,11 @@ val equal : ?cmp:('a -> 'a -> int) -> 'a t -> 'a t -> bool
 val pp_graph : (formatter -> 'a t -> unit) -> formatter -> 'a t -> unit
 
 val output_image : (formatter -> 'a t -> unit) -> string -> 'a t -> unit
+
+(** {2 Save and load} *)
+
+val save : (formatter -> 'a -> unit) -> formatter -> 'a t -> unit
+
+val load : (string -> 'a) -> Lexing.lexbuf -> 'a t
+
+val load_from_string : (string -> 'a) -> string -> 'a t
