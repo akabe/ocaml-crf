@@ -69,25 +69,27 @@ let pp_confusion_matrix pp_out_label ppf { labels; tbl } =
   Slap.Io.pp_table ~pp_end_col ~pp_left:pp_label ~pp_head:pp_label
     pp_print_int ppf (n + 1) (n + 1) get_el
 
+let div m n = if n = 0 then None else Some (float m /. float n)
+
 let accuracy { labels; tbl; } =
   let deno = Hashtbl.find tbl (Total, Total) in
   let nume = Array.fold_left
       (fun acc x -> acc + Hashtbl.find tbl (Label x, Label x))
       0 labels in
-  float nume /. float deno
+  div nume deno
 
 let precision { labels; tbl; } =
   Array.map (fun x ->
       let deno = Hashtbl.find tbl (Total, Label x) in
       let nume = Hashtbl.find tbl (Label x, Label x) in
-      float nume /. float deno)
+      div nume deno)
     labels
 
 let recall { labels; tbl; } =
   Array.map (fun x ->
       let deno = Hashtbl.find tbl (Label x, Total) in
       let nume = Hashtbl.find tbl (Label x, Label x) in
-      float nume /. float deno)
+      div nume deno)
     labels
 
 let f_score { labels; tbl; } =
@@ -95,9 +97,12 @@ let f_score { labels; tbl; } =
       let denoP = Hashtbl.find tbl (Total, Label x) in
       let denoR = Hashtbl.find tbl (Label x, Total) in
       let nume = Hashtbl.find tbl (Label x, Label x) in
-      let prec = float nume /. float denoP in
-      let recall = float nume /. float denoR in
-      2.0 *. prec *. recall /. (prec +. recall))
+      if denoP = 0 || denoR = 0 then None
+      else begin
+        let prec = float nume /. float denoP in
+        let recall = float nume /. float denoR in
+        Some (2.0 *. prec *. recall /. (prec +. recall))
+      end)
     labels
 
 let pp_score pp_out_label ppf cmat =
@@ -111,5 +116,7 @@ let pp_score pp_out_label ppf cmat =
   in
   let pp_end_col ppf ~row:_ ~col:_ = pp_print_string ppf " | " in
   let get_el i j = [|precs; recalls; fs|].(j-1).(i-1) in
-  Slap.Io.pp_table ~pp_end_col ~pp_left ~pp_head
-    (fun ppf -> fprintf ppf "%g") ppf n 3 get_el
+  let pp_el ppf = function
+    | None -> pp_print_string ppf "N/A"
+    | Some x -> fprintf ppf "%g" x in
+  Slap.Io.pp_table ~pp_end_col ~pp_left ~pp_head pp_el ppf n 3 get_el
