@@ -15,24 +15,13 @@
    You should have received a copy of the GNU General Public License along with
    this program. If not, see <http://www.gnu.org/licenses/>. *)
 
-open Format
-open Slap.D
+(** Inference by PfGA (Parameter-free Genetic Algorithm). *)
 
-module Graph = Crf_graph
-
-include Crf_model
-
-module Train = Crf_train
-
-module Eval = Crf_eval
-
-module Naive = Crf_naive
-
-module Sampling = Crf_sampling
-
-(** Simulated annealing *)
-module SA = Crf_sa
-
-module GA = Crf_ga
-
-module PfGA = Crf_pfga
+val infer :
+  rng:Gsl.Rng.t ->
+  all:bool ->
+  generation:int ->
+  ('a, 'b, 'kv, 'ke) Crf_model.model ->
+  ('kv, 'ke) Crf_model.fwvec ->
+  ('a, 'b) Crf_model.label Crf_graph.t ->
+  'b Crf_graph.t

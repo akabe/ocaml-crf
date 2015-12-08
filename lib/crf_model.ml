@@ -92,15 +92,17 @@ let graph_feature model ig og =
 
 let map_sum2 f = List.fold_left2 (fun acc x y -> acc +. f x y) 0.0
 
-let local_potential model w iv ov =
+let local_log_potential model w iv ov =
   let (wv, we) = split_fwvec model w in
   let pot_v = dot wv (model.vertex_ff iv ov) in
   let pot_e = map_sum2
       (fun (iv1, iv2) (ov1, ov2) -> dot we (model.edge_ff iv1 ov1 iv2 ov2))
       (Crf_graph.edges iv) (Crf_graph.edges ov) in
-  exp (pot_v +. pot_e)
+  pot_v +. pot_e
 
-let graph_potential model w ig og =
+let local_potential model w iv ov = exp (local_log_potential model w iv ov)
+
+let graph_log_potential model w ig og =
   let (wv, we) = split_fwvec model w in
   let add_potential acc iv ov =
     let pot_v = dot wv (model.vertex_ff iv ov) in
@@ -109,4 +111,6 @@ let graph_potential model w ig og =
         (Crf_graph.children iv) (Crf_graph.children ov) in
     acc +. pot_v +. pot_e
   in
-  exp (Crf_graph.fold2 add_potential 0.0 ig og)
+  Crf_graph.fold2 add_potential 0.0 ig og
+
+let graph_potential model w ig og = exp (graph_log_potential model w ig og)

@@ -82,6 +82,18 @@ val graph_feature :
 
 (** {2 Potential} *)
 
+val local_log_potential :
+  ('a, 'b, 'kv, 'ke) model ->
+  ('kv, 'ke) fwvec ->
+  ('a, 'b) in_graph ->
+  'b graph -> float
+
+val graph_log_potential :
+  ('a, 'b, 'kv, 'ke) model ->
+  ('kv, 'ke) fwvec ->
+  ('a, 'b) in_graph ->
+  'b graph -> float
+
 val local_potential :
   ('a, 'b, 'kv, 'ke) model ->
   ('kv, 'ke) fwvec ->

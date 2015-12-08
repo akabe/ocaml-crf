@@ -30,6 +30,7 @@ Library crf
                         Crf_sampling,
                         Crf_sa,
                         Crf_ga,
+                        Crf_pfga,
                         Crf_eval
 
 ##
